@@ -361,7 +361,7 @@ input[type=checkbox]{width:20px;height:20px;accent-color:var(--bulb)}
       <fieldset><legend>QR sharing — Dropbox</legend>
         <p class="hint" style="grid-column:1/-1">Each photo uploads to your Dropbox (Apps › your booth app) and guests scan a QR code to get it. The booth needs internet; photos taken offline upload when it's back.</p>
         <div class="dbx-steps" id="dbxSetup">
-          <label>Dropbox App key<input type="text" id="s-dbxKey" spellcheck="false" autocomplete="off" autocapitalize="off" placeholder="From the Settings tab of your Dropbox app"></label>
+          <label>Dropbox App key (already filled in)<input type="text" id="s-dbxKey" spellcheck="false" autocomplete="off" autocapitalize="off" placeholder="From the Settings tab of your Dropbox app"></label>
           <div class="art-row"><a class="btn primary" id="dbxOpen" target="_blank" rel="noopener" aria-disabled="true">1. Approve in Dropbox</a><span class="hint">Opens Dropbox in a new tab. Click Allow, then copy the code it shows.</span></div>
           <label>2. Paste the code from Dropbox<input type="text" id="s-dbxCode" spellcheck="false" autocomplete="off" autocapitalize="off"></label>
           <div class="art-row"><button type="button" class="btn" id="dbxFinish">3. Finish connecting</button></div>
@@ -3225,6 +3225,7 @@ async function makeGif(frames, delay){
 // PKCE sign-in without a redirect: Dropbox shows a code the owner pastes back. Tokens stay in this browser.
 const DBX_STORE="booth-dropbox";
 const SF=id=>document.getElementById("s-"+id);
+const BUILTIN_DBX_KEY="bukxlpgmzxi3pf8"; // this booth's Dropbox app (not a secret)
 let DBX={}; try{ DBX=JSON.parse(localStorage.getItem(DBX_STORE)||"{}"); }catch(e){}
 function dbxSave(){ try{ localStorage.setItem(DBX_STORE, JSON.stringify(DBX)); }catch(e){} }
 const dbxConnected=()=>!!(DBX.appKey && DBX.refresh);
@@ -3325,7 +3326,7 @@ async function updateQueueInfo(){
 function renderDbxSettings(){
   const ok=dbxConnected();
   $("#dbxSetup").hidden=ok; $("#dbxDone").hidden=!ok;
-  SF("dbxKey").value=DBX.appKey||DBX.pendKey||""; SF("dbxCode").value=""; SF("qrOn").checked=S.qrOn!==false;
+  SF("dbxKey").value=DBX.appKey||DBX.pendKey||BUILTIN_DBX_KEY; SF("dbxCode").value=""; SF("qrOn").checked=S.qrOn!==false;
   if (!ok) prepareLink(); updateQueueInfo();
 }
 let prepT=null;
